@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   plugin_platform_interface: ^2.0.2
-  flutter_audio_capture: ^1.1.11
+  record: ^7.1.1
   permission_handler: ^11.3.1
 
 dev_dependencies:

@@ -38,13 +38,13 @@ class TunerEngine {
   final int sampleRate;
 
   /// The number of samples per frame.
-  final int bufferSize;
+  final int frameSize;
 
   TunerEngine({
     this.profile = InstrumentProfile.guitar,
     this.sampleRate = 44100,
-    this.bufferSize = 8192,
-  })  : _capture = AudioCapture(sampleRate: sampleRate, bufferSize: bufferSize),
+    this.frameSize = 8192,
+  })  : _capture = AudioCapture(sampleRate: sampleRate, frameSize: frameSize),
         _yin = YinPitchDetector(sampleRate),
   // Pass the profile down so the detector uses this instrument's bounds.
         _chordDetector = ChordDetector(sampleRate, profile),
