@@ -1,7 +1,7 @@
 name: pitch_kit
 description: "A new Flutter project."
 version: 0.0.1
-homepage:
+homepage: https://github.com/NicosNicolaou16/pitch_kit
 
 environment:
   sdk: ^3.13.0
