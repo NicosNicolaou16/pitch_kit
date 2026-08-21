@@ -1,9 +1,12 @@
-/*
 import 'package:flutter/material.dart';
+
 import 'dart:async';
 
-import 'package:flutter/services.dart';
 import 'package:pitch_kit/pitch_kit.dart';
+
+import 'helpers/peg_helpers.dart';
+
+import 'package:flutter/services.dart';
 
 void main() {
   runApp(const MyApp());
@@ -33,7 +36,8 @@ class _MyAppState extends State<MyApp> {
     // We also handle the message potentially returning null.
     try {
       platformVersion =
-          await _pitchKitPlugin.getPlatformVersion() ?? 'Unknown platform version';
+          await _pitchKitPlugin.getPlatformVersion() ??
+          'Unknown platform version';
     } on PlatformException {
       platformVersion = 'Failed to get platform version.';
     }
@@ -47,28 +51,6 @@ class _MyAppState extends State<MyApp> {
       _platformVersion = platformVersion;
     });
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(title: const Text('Plugin example app')),
-        body: Center(child: Text('Running on: $_platformVersion\n')),
-      ),
-    );
-  }
-}
-*/
-import 'package:flutter/material.dart';
-import 'package:pitch_kit/pitch_kit.dart';
-import 'helpers/peg_helpers.dart';
-
-void main() {
-  runApp(const PitchKitApp());
-}
-
-class PitchKitApp extends StatelessWidget {
-  const PitchKitApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +83,7 @@ class _TunerScreenState extends State<TunerScreen> {
         _resultFreq = result.freq;
       }
       _resultNote = switch (result) {
-      // "${result.name} ${result.freq} (${result.cents}¢)" if you want detail
+        // "${result.name} ${result.freq} (${result.cents}¢)" if you want detail
         NoteTuningResult() => result.name,
         ChordTuningResult() => result.name,
         SilenceTuningResult() => '-',
@@ -148,11 +130,8 @@ class ExpressiveTunerUI extends StatelessWidget {
     // Check if the detected note matches a standard string. isPegActive uses
     // the frequency gate to separate low E from high e.
     final isStandardNote = _standardStrings.any(
-          (peg) => isPegActive(
-        resultFreq: resultFreq,
-        resultNote: resultNote,
-        peg: peg,
-      ),
+      (peg) =>
+          isPegActive(resultFreq: resultFreq, resultNote: resultNote, peg: peg),
     );
 
     // Smoothly animate the main note color to green when a target is detected.
@@ -244,8 +223,9 @@ class _PegIndicator extends StatelessWidget {
     final backgroundColor = isActive
         ? const Color(0xFF4CAF50).withValues(alpha: 0.2)
         : Colors.transparent;
-    final textColor =
-    isActive ? const Color(0xFF2E7D32) : colorScheme.onSurfaceVariant;
+    final textColor = isActive
+        ? const Color(0xFF2E7D32)
+        : colorScheme.onSurfaceVariant;
 
     // A slight pop when the string goes active (1.0 → 1.2), animated.
     return TweenAnimationBuilder<double>(
