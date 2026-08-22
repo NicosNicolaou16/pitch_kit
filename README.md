@@ -132,5 +132,133 @@ automatically when the widget is disposed.
 | `rmsGate`       | This parameter is the loudness gate (RMS); frames quieter than this are treated as silence, default value `0.01` |
 | `useFlats`      | This parameter is the option to display flats (Bb) instead of sharps (A#), default value `false`                 |
 
+```dart
+import 'package:flutter/material.dart';
+import 'package:pitch_kit/pitch_kit.dart';
 
+void main() {
+  runApp(const MyApp());
+}
 
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Pitch Kit',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF6200EE)),
+        useMaterial3: true,
+      ),
+      home: const MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  const MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  String _resultNote = '-';
+  double _resultFreq = 0.0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Pitch Kit',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+      ),
+      // ==========================================
+      // 1. Start the tuner
+      // ==========================================
+      body: GuitarTunerListener(
+        profile: InstrumentProfile.guitar,
+        onResult: (result) {
+          setState(() {
+            _resultFreq = result is NoteTuningResult ? result.freq : 0.0;
+            _resultNote = switch (result) {
+              NoteTuningResult() => result.name,
+              ChordTuningResult() => result.name,
+              SilenceTuningResult() => '-',
+            };
+          });
+        },
+        // ==========================================
+        // 2. Render your UI
+        // ==========================================
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                _resultNote,
+                style: const TextStyle(
+                  fontSize: 96,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              if (_resultFreq > 0)
+                Text(
+                  '${_resultFreq.toStringAsFixed(1)} Hz',
+                  style: const TextStyle(fontSize: 20, color: Colors.grey),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+```
+
+### 🎼 Custom Tuning
+
+You can supply your own `InstrumentProfile` for non-standard tunings:
+
+```dart
+const dropD = InstrumentProfile(
+  name: 'Drop D',
+  minFreq: 60.0,
+  maxFreq: 5000.0,
+  bassCeiling: 400.0,
+  harmonicPivot: 200.0,
+  openStrings: [
+    OpenString('D2', 73.42),
+    OpenString('A2', 110.00),
+    OpenString('D3', 146.83),
+    OpenString('G3', 196.00),
+    OpenString('B3', 246.94),
+    OpenString('E4', 329.63),
+  ],
+);
+
+GuitarTunerListener(
+  profile: dropD,
+  onResult: (result) {
+    //...your code here
+  },
+  child: const SizedBox(),
+);
+```
+
+### 🎹 Supported Chords
+
+Each of the 12 roots is combined with the following qualities: `major`, `minor` (`m`), `dominant 7th` (`7`), `minor 7th` (`m7`), `major 7th` (`maj7`), `sus2`, `sus4`, `diminished` (`dim`), and `augmented` (`aug`).
+
+Examples: `C`, `Am`, `G7`, `Em7`, `Dmaj7`, `Asus2`, `Bdim`, `Faug`.
+
+## ℹ️ Additional information
+
+Thank you for using **pitch_kit**! Your feedback helps make this package better.
+If you encounter any bugs or unexpected behavior, please open an issue on
+the [GitHub repository](https://github.com/NicosNicolaou16/pitch_kit/issues).
