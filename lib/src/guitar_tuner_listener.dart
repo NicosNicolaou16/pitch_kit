@@ -1,6 +1,8 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+
 import 'extensions/extensions.dart';
 import 'models/instrument_profile.dart';
 import 'tuner_engine.dart';
@@ -47,10 +49,8 @@ class GuitarTunerListener extends StatefulWidget {
     super.key,
     this.profile = InstrumentProfile.guitar,
     this.titleText = 'Microphone needed',
-    this.permanentlyDeniedText =
-    'Microphone access is blocked. Please enable it in Settings to tune your guitar.',
-    this.rationaleText =
-    'This app needs microphone access to detect notes and chords from your guitar.',
+    this.permanentlyDeniedText = 'Microphone access is blocked. Please enable it in Settings to tune your guitar.',
+    this.rationaleText = 'This app needs microphone access to detect notes and chords from your guitar.',
     this.openSettingsText = 'Open Settings',
     this.allowText = 'Allow',
     this.dismissText = 'Not now',
@@ -132,7 +132,9 @@ class _GuitarTunerListenerState extends State<GuitarTunerListener>
       builder: (ctx) => AlertDialog(
         title: Text(widget.titleText),
         content: Text(
-          permanentlyDenied ? widget.permanentlyDeniedText : widget.rationaleText,
+          permanentlyDenied
+              ? widget.permanentlyDeniedText
+              : widget.rationaleText,
         ),
         actions: [
           TextButton(

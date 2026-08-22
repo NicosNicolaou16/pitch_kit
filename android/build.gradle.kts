@@ -2,14 +2,14 @@ group = "com.example.pitch_kit"
 version = "1.0-SNAPSHOT"
 
 buildscript {
-    val kotlinVersion = "2.4.0"
+    val kotlinVersion = "2.4.10"
     repositories {
         google()
         mavenCentral()
     }
 
     dependencies {
-        classpath("com.android.tools.build:gradle:9.1.0")
+        classpath("com.android.tools.build:gradle:9.3.1")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
     }
 }
@@ -26,9 +26,9 @@ plugins {
 }
 
 android {
-    namespace = "com.example.pitch_kit"
+    namespace = "com.nicos.pitch_kit"
 
-    compileSdk = 36
+    compileSdk = 37
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -45,7 +45,7 @@ android {
     }
 
     defaultConfig {
-        minSdk = 24
+        minSdk = 28
     }
 
     testOptions {

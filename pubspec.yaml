@@ -1,6 +1,12 @@
 name: pitch_kit
 description: "A new Flutter project."
 version: 0.0.1
+topics:
+  - chord_detector
+  - tuner
+  - tuning
+  - frequency_analysis
+  - music
 homepage: https://github.com/NicosNicolaou16/pitch_kit
 
 environment:
@@ -10,9 +16,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  plugin_platform_interface: ^2.0.2
+  plugin_platform_interface: ^2.1.8
   record: ^7.1.1
-  permission_handler: ^11.3.1
+  permission_handler: ^13.0.1
 
 dev_dependencies:
   flutter_test:
@@ -37,7 +43,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.example.pitch_kit
+        package: com.nicos.pitch_kit
         pluginClass: PitchKitPlugin
       ios:
         pluginClass: PitchKitPlugin
