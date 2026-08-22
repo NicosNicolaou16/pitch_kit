@@ -41,7 +41,7 @@ The microphone permission must be declared in **your app** (not the package) on 
 
 #### Android
 
-No action needed. PitchKit already declares `android.permission.RECORD_AUDIO` in its manifest, so it merges into your app automatically.
+No action needed. pitch_kit already declares `android.permission.RECORD_AUDIO` in its manifest, so it merges into your app automatically.
 
 #### iOS
 
