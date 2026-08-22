@@ -41,7 +41,7 @@ The microphone permission must be declared in **your app** (not the package) on 
 
 #### Android
 
-Add the microphone permission to `android/app/src/main/AndroidManifest.xml`:
+No action needed. PitchKit already declares `android.permission.RECORD_AUDIO` in its manifest, so it merges into your app automatically.
 
 ```xml
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
