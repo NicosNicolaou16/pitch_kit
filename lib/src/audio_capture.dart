@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:typed_data';
+
 import 'package:record/record.dart';
 
 /// Captures mic audio via the `record` package and emits fixed-size frames of
