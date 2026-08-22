@@ -21,13 +21,27 @@ class NoteResult {
 class NoteMapper {
   /// 12 semitones. Index 0 = C, matching the MIDI note numbering below.
   static const List<String> _names = [
-    'C', 'C#', 'D', 'D#', 'E', 'F',
-    'F#', 'G', 'G#', 'A', 'A#', 'B',
+    'C',
+    'C#',
+    'D',
+    'D#',
+    'E',
+    'F',
+    'F#',
+    'G',
+    'G#',
+    'A',
+    'A#',
+    'B',
   ];
 
   /// If you'd rather display flats (Bb instead of A#), map sharp → flat here.
   static const Map<String, String> _flatAliases = {
-    'A#': 'Bb', 'C#': 'Db', 'D#': 'Eb', 'F#': 'Gb', 'G#': 'Ab',
+    'A#': 'Bb',
+    'C#': 'Db',
+    'D#': 'Eb',
+    'F#': 'Gb',
+    'G#': 'Ab',
   };
 
   /// Converts a frequency to the nearest musical note.
