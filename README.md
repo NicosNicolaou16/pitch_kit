@@ -43,10 +43,6 @@ The microphone permission must be declared in **your app** (not the package) on 
 
 No action needed. PitchKit already declares `android.permission.RECORD_AUDIO` in its manifest, so it merges into your app automatically.
 
-```xml
-<uses-permission android:name="android.permission.RECORD_AUDIO" />
-```
-
 #### iOS
 
 **1.** Add the usage description to `ios/Runner/Info.plist`. Without it, iOS terminates the app the instant it accesses the microphone:
