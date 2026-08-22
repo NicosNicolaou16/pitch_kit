@@ -83,11 +83,16 @@ class FFT {
   ///
   /// [padFactor] 1 = no padding; 2 = double the FFT size; etc. Higher = finer
   /// grid but more CPU. Must keep the result a power of 2.
-  static List<double> magnitudePadded(List<double> samples,
-      {int padFactor = 2}) {
+  static List<double> magnitudePadded(
+    List<double> samples, {
+    int padFactor = 2,
+  }) {
     final base = _highestOneBit(samples.length); // largest pow2 that fits
     final n = base * padFactor; // padded size (still pow2)
-    final re = List<double>.filled(n, 0.0); // entries past `base` stay 0 = padding
+    final re = List<double>.filled(
+      n,
+      0.0,
+    ); // entries past `base` stay 0 = padding
     final im = List<double>.filled(n, 0.0);
 
     // Apply a Hann window to the REAL samples only (the padded tail stays zero).
