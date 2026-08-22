@@ -26,7 +26,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.pitch_kit"
+    namespace = "com.nicos.pitch_kit"
 
     compileSdk = 36
 

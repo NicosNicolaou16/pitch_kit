@@ -37,7 +37,7 @@ flutter:
   plugin:
     platforms:
       android:
-        package: com.example.pitch_kit
+        package: com.nicos.pitch_kit
         pluginClass: PitchKitPlugin
       ios:
         pluginClass: PitchKitPlugin

@@ -1,4 +1,4 @@
-package com.example.pitch_kit
+package com.nicos.pitch_kit
 
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
