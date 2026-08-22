@@ -7,8 +7,11 @@ extension EngineResultToPublic on EngineResult {
   TuningResult toPublic() {
     final self = this;
     return switch (self) {
-      EngineNote() =>
-          NoteTuningResult(name: self.name, cents: self.cents, freq: self.freq),
+      EngineNote() => NoteTuningResult(
+        name: self.name,
+        cents: self.cents,
+        freq: self.freq,
+      ),
       EngineChord() => ChordTuningResult(name: self.name),
       EngineSilence() => const SilenceTuningResult(),
     };
