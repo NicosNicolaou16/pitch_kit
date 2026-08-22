@@ -87,4 +87,50 @@ post_install do |installer|
 end
 ```
 
+## 💡 Usage
+
+[![](https://github.com/NicosNicolaou16/pitch_kit/raw/main/screenshots/example.gif)](https://github.com/NicosNicolaou16/pitch_kit/raw/main/screenshots/example.gif)
+
+### 🎸 GuitarTunerListener
+
+Wrap any widget with `GuitarTunerListener`. It requests the microphone permission, starts detection,
+and streams a typed `TuningResult` back through the `onResult` callback. Detection stops
+automatically when the widget is disposed.
+
+| Parameters              | Description                                                                                                                                             |
+|-------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `onResult`              | This parameter is required and it's the callback invoked with each detection result (`NoteTuningResult`, `ChordTuningResult`, or `SilenceTuningResult`) |
+| `child`                 | This parameter is required and it's the widget rendered while the tuner runs in the background                                                          |
+| `profile`               | This parameter is the `InstrumentProfile` to tune for, with default value `InstrumentProfile.guitar` (built-in: `.guitar`, `.ukulele`, `.bass`)         |
+| `titleText`             | This parameter is the title text of the permission popup with default value `"Microphone needed"`                                                       |
+| `rationaleText`         | This parameter is the text shown when the permission can still be requested                                                                             |
+| `permanentlyDeniedText` | This parameter is the text shown when the permission is permanently denied (the button then opens Settings)                                             |
+| `allowText`             | This parameter is the confirm button label when the permission can still be requested with default value `"Allow"`                                      |
+| `openSettingsText`      | This parameter is the confirm button label when the permission is permanently denied with default value `"Open Settings"`                               |
+| `dismissText`           | This parameter is the dismiss button label with default value `"Not now"`                                                                               |
+
+### 🎶 TuningResult
+
+`TuningResult` is a sealed class with three cases you can handle exhaustively:
+
+| Type                  | Description                                                                                         |
+|-----------------------|-----------------------------------------------------------------------------------------------------|
+| `NoteTuningResult`    | A single detected note: `name` (e.g. `"E"`, `"A#"`), `freq` (Hz), and `cents` (deviation, -50..+50) |
+| `ChordTuningResult`   | A detected chord: `name` (e.g. `"Am"`, `"Cmaj7"`)                                                   |
+| `SilenceTuningResult` | No sound / below the detection threshold                                                            |
+
+### 🎻 InstrumentProfile
+
+| Parameters      | Description                                                                                                      |
+|-----------------|------------------------------------------------------------------------------------------------------------------|
+| `name`          | This parameter is required and it's the human-readable label, e.g. `"Guitar"`                                    |
+| `minFreq`       | This parameter is required and it's the lowest frequency (Hz) analysis considers                                 |
+| `maxFreq`       | This parameter is required and it's the highest frequency (Hz) considered for chroma                             |
+| `bassCeiling`   | This parameter is required and it's the ceiling (Hz) for the chord bass-note scan                                |
+| `harmonicPivot` | This parameter is required and it's the frequency (Hz) around which harmonic down-weighting is centred           |
+| `openStrings`   | This parameter is required and it's the list of `OpenString` values for the instrument's standard tuning         |
+| `rmsGate`       | This parameter is the loudness gate (RMS); frames quieter than this are treated as silence, default value `0.01` |
+| `useFlats`      | This parameter is the option to display flats (Bb) instead of sharps (A#), default value `false`                 |
+
+
 
