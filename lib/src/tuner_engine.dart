@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 import 'dart:math' as math;
+
 import 'audio_capture.dart';
 import 'chord_detector.dart';
 import 'models/instrument_profile.dart';
@@ -17,11 +18,13 @@ class EngineNote extends EngineResult {
   final String name;
   final double cents;
   final double freq;
+
   const EngineNote(this.name, this.cents, this.freq);
 }
 
 class EngineChord extends EngineResult {
   final String name;
+
   const EngineChord(this.name);
 }
 
@@ -44,12 +47,12 @@ class TunerEngine {
     this.profile = InstrumentProfile.guitar,
     this.sampleRate = 44100,
     this.frameSize = 8192,
-  })  : _capture = AudioCapture(sampleRate: sampleRate, frameSize: frameSize),
-        _yin = YinPitchDetector(sampleRate),
-  // Pass the profile down so the detector uses this instrument's bounds.
-        _chordDetector = ChordDetector(sampleRate, profile),
-  // Loudness gate now comes from the profile rather than being hardcoded.
-        _rmsGate = profile.rmsGate;
+  }) : _capture = AudioCapture(sampleRate: sampleRate, frameSize: frameSize),
+       _yin = YinPitchDetector(sampleRate),
+       // Pass the profile down so the detector uses this instrument's bounds.
+       _chordDetector = ChordDetector(sampleRate, profile),
+       // Loudness gate now comes from the profile rather than being hardcoded.
+       _rmsGate = profile.rmsGate;
 
   final AudioCapture _capture;
   final YinPitchDetector _yin;
@@ -99,7 +102,9 @@ class TunerEngine {
       } else {
         // Polyphonic → chord template matching.
         final chord = _chordDetector.detect(buf);
-        result = chord != null ? EngineChord(chord.name) : const EngineSilence();
+        result = chord != null
+            ? EngineChord(chord.name)
+            : const EngineSilence();
       }
 
       _controller?.add(_smooth(result));
