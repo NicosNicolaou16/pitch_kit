@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'dart:math' as math;
+
 import 'fft.dart';
 import 'models/instrument_profile.dart';
 
@@ -7,6 +8,7 @@ import 'models/instrument_profile.dart';
 class _Template {
   final String name;
   final List<int> pitches;
+
   const _Template(this.name, this.pitches);
 }
 
@@ -14,6 +16,7 @@ class _Template {
 class ChordResult {
   final String name;
   final double score;
+
   const ChordResult(this.name, this.score);
 }
 
@@ -42,7 +45,20 @@ class ChordDetector {
   /// instrument-independent (a C major is C-E-G on any instrument). The ONLY
   /// per-instrument bit is the sharp/flat display preference.
   List<_Template> _buildTemplates() {
-    final roots = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+    final roots = [
+      'C',
+      'C#',
+      'D',
+      'D#',
+      'E',
+      'F',
+      'F#',
+      'G',
+      'G#',
+      'A',
+      'A#',
+      'B',
+    ];
     final flat = {'C#': 'Db', 'D#': 'Eb', 'F#': 'Gb', 'G#': 'Ab', 'A#': 'Bb'};
     final list = <_Template>[];
     final qualities = <MapEntry<String, List<int>>>[
@@ -59,7 +75,9 @@ class ChordDetector {
     for (var r = 0; r < roots.length; r++) {
       for (final q in qualities) {
         // Use the profile's sharp/flat preference for the display name.
-        final rootName = profile.useFlats ? (flat[roots[r]] ?? roots[r]) : roots[r];
+        final rootName = profile.useFlats
+            ? (flat[roots[r]] ?? roots[r])
+            : roots[r];
         final display = rootName + q.key;
         final pitches = q.value.map((it) => (it + r) % 12).toList();
         list.add(_Template(display, pitches));
@@ -83,8 +101,9 @@ class ChordDetector {
       if (freq < profile.minFreq || freq > profile.maxFreq) continue;
 
       // Harmonic weighting centred on the instrument's pivot, not a fixed 200.
-      final weight =
-      math.sqrt(profile.harmonicPivot / math.max(freq, profile.harmonicPivot));
+      final weight = math.sqrt(
+        profile.harmonicPivot / math.max(freq, profile.harmonicPivot),
+      );
 
       final midi = 69 + 12 * (math.log(freq / 440.0) / math.log(2.0));
       final pc = ((midi.round() % 12) + 12) % 12;
@@ -189,7 +208,9 @@ class ChordDetector {
       _currentChord = candidateName;
       _currentScore = bestScore;
     }
-    return _currentChord == null ? null : ChordResult(_currentChord!, _currentScore);
+    return _currentChord == null
+        ? null
+        : ChordResult(_currentChord!, _currentScore);
   }
 
   /// Clears rolling state; call on silence so the next chord starts fresh.
