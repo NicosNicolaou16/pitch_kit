@@ -2,7 +2,7 @@ group = "com.example.pitch_kit"
 version = "1.0-SNAPSHOT"
 
 buildscript {
-    val kotlinVersion = "2.4.0"
+    val kotlinVersion = "2.4.10"
     repositories {
         google()
         mavenCentral()
