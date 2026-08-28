@@ -88,6 +88,8 @@ end
 
 ## 💡 Usage
 
+The example below shows a minimal integration. See the [example project](https://github.com/NicosNicolaou16/pitch_kit/tree/main/example) for the full app.
+
 <p align="left">
   <a title="simulator_image"><img src="https://github.com/NicosNicolaou16/pitch_kit/raw/main/screenshots/image1.png" height="530" width="250"></a>
   <a title="simulator_image"><img src="https://github.com/NicosNicolaou16/pitch_kit/raw/main/screenshots/image2.png" height="530" width="250"></a>
