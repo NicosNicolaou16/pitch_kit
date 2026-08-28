@@ -89,7 +89,7 @@ end
 ## 💡 Usage
 
 <p align="left">
-  <a title="simulator_image"><img src="(https://github.com/NicosNicolaou16/pitch_kit/raw/main/screenshots/screen-20260823-194737_3.gif" height="530" width="250"></a>
+  <a title="simulator_image"><img src="(https://github.com/NicosNicolaou16/pitch_kit/blob/main/screenshots/screen-20260823-194737_3.gif" height="530" width="250"></a>
 </p>
 
 ### 🎸 GuitarTunerListener
