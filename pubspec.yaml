@@ -2,7 +2,7 @@ name: pitch_kit
 description: "A new Flutter project."
 version: 0.0.1
 topics:
-  - chord_detector
+  - chord-detector
   - tuner
   - tuning
   - frequency_analysis
