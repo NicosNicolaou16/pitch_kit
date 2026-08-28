@@ -20,6 +20,9 @@ Tested Versioning:
 Flutter SDK version: 3.47.1  
 Dart Version: 3.13.1
 
+Android Target SDK: 37
+Min Android SDK: 28
+
 Add the package to your `pubspec.yaml`:
 
 ```yaml
@@ -85,7 +88,9 @@ end
 
 ## 💡 Usage
 
-[![](https://github.com/NicosNicolaou16/pitch_kit/raw/main/screenshots/example.gif)](https://github.com/NicosNicolaou16/pitch_kit/raw/main/screenshots/example.gif)
+<p align="left">
+  <a title="simulator_image"><img src="(https://github.com/NicosNicolaou16/pitch_kit/raw/main/screenshots/screen-20260823-194737_3.gif" height="530" width="250"></a>
+</p>
 
 ### 🎸 GuitarTunerListener
 
