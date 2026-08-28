@@ -22,6 +22,7 @@ Dart Version: 3.13.1
 
 Android Target SDK: 37
 Min Android SDK: 28
+Min iOS Deployment Target: 15.0
 
 Add the package to your `pubspec.yaml`:
 
