@@ -20,6 +20,9 @@ Tested Versioning:
 Flutter SDK version: 3.47.1  
 Dart Version: 3.13.1
 
+Android Target SDK: 37
+Min Android SDK: 28
+
 Add the package to your `pubspec.yaml`:
 
 ```yaml
