@@ -88,7 +88,7 @@ end
 
 ## 💡 Usage
 
-[![](https://github.com/NicosNicolaou16/pitch_kit/raw/main/screenshots/example.gif)](https://github.com/NicosNicolaou16/pitch_kit/raw/main/screenshots/example.gif)
+[![](https://github.com/NicosNicolaou16/pitch_kit/raw/main/screenshots/screen-20260823-194737_3.gif)](https://github.com/NicosNicolaou16/pitch_kit/raw/main/screenshots/screen-20260823-194737_3.gif)
 
 ### 🎸 GuitarTunerListener
 
