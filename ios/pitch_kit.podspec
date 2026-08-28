@@ -5,11 +5,12 @@
 Pod::Spec.new do |s|
   s.name             = 'pitch_kit'
   s.version          = '0.0.1'
-  s.summary          = 'A new Flutter project.'
+  s.summary          = 'Real-time guitar, ukulele, and bass tuning and chord detection.'
   s.description      = <<-DESC
-A new Flutter project.
+A Flutter package for real-time note and chord detection from the device
+microphone, with a pure Dart DSP core.
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'https://github.com/NicosNicolaou16/pitch_kit'
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'Your Company' => 'email@example.com' }
   s.source           = { :path => '.' }
