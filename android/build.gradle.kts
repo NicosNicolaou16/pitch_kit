@@ -1,5 +1,5 @@
 group = "com.example.pitch_kit"
-version = "1.0-SNAPSHOT"
+version = "0.0.1"
 
 buildscript {
     val kotlinVersion = "2.4.10"
