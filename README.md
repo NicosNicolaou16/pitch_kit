@@ -14,15 +14,17 @@ A modern and easy-to-use Flutter package for real-time guitar tuning and chord d
 
 ## 🚀 Getting started
 
-Version Minimum Flutter SDK: 3.3.0
+### Requirements
 
-Tested Versioning:  
-Flutter SDK version: 3.47.1  
-Dart Version: 3.13.1
+| Requirement          | Version |
+| -------------------- | ------- |
+| Flutter SDK          | ≥ 3.3.0 |
+| Dart SDK             | ≥ 3.0.0 |
+| Android — min SDK    | 28      |
+| Android — target SDK | 37      |
+| iOS — min deployment | 15.0    |
 
-Android Target SDK: 37
-Min Android SDK: 28
-Min iOS Deployment Target: 15.0
+Tested on Flutter 3.47.1 / Dart 3.13.1.
 
 Add the package to your `pubspec.yaml`:
 
