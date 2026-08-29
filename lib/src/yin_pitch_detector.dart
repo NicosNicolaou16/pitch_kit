@@ -10,12 +10,22 @@ class YinPitchDetector {
   /// Detects the fundamental of a SINGLE note. YIN works in the time domain,
   /// finding the period at which the signal best repeats itself — this resists
   /// the octave errors that plague simple FFT peak-picking. Returns Hz, or -1.
-  double detect(List<double> buffer) {
-    final tau = buffer.length ~/ 2;
+  ///
+  /// [minFreq] bounds the search: we never look for periods longer than the
+  /// lowest note we care about. The longest period is sampleRate / minFreq, so
+  /// capping tau there instead of scanning half the buffer slashes the O(n²)
+  /// cost (for guitar, ~630 lags instead of 4096 — a ~40× reduction).
+  double detect(List<double> buffer, {double minFreq = 70.0}) {
+    // Longest period (in samples) we need to detect = sampleRate / minFreq.
+    // +1 for a little headroom, then clamp so we never read past the buffer:
+    // the inner loop touches buffer[i + t] with i,t < tau, i.e. up to 2*tau,
+    // which stays valid only while tau <= buffer.length / 2.
+    final maxPeriod = (sampleRate / minFreq).ceil() + 1;
+    final tau = maxPeriod < buffer.length ~/ 2 ? maxPeriod : buffer.length ~/ 2;
     final yin = List<double>.filled(tau, 0.0);
 
     // 1. Difference function: how different is the signal from itself shifted
-    //    by t?
+    //    by t?  (Now bounded by the capped tau.)
     for (var t = 1; t < tau; t++) {
       var sum = 0.0;
       for (var i = 0; i < tau; i++) {

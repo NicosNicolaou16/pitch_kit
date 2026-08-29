@@ -155,15 +155,17 @@ class ChordDetector {
     return -1;
   }
 
-  /// Detects the chord in the buffer.
-  /// Pipeline: padded FFT (once) → interpolated + harmonic-weighted chroma →
-  /// temporal averaging → bass detection → template scoring with bass bonus →
-  /// hysteresis → result.
-  ChordResult? detect(List<double> buffer, {double minScore = 0.20}) {
-    // Padded FFT computed once, reused for chroma + bass.
-    final mags = FFT.magnitudePadded(buffer, padFactor: 2);
-    final n = mags.length * 2;
-
+  /// Detects the chord from a PRECOMPUTED magnitude spectrum. Prefer this when
+  /// the caller already has `mags` (e.g. the engine, which computes the FFT
+  /// once per frame and shares it between the chroma count and chord scoring).
+  ///
+  /// [mags] is the padded magnitude spectrum; [n] is the FFT size (mags.length
+  /// * 2).
+  ChordResult? detectFromSpectrum(
+      List<double> mags,
+      int n, {
+        double minScore = 0.20,
+      }) {
     final rawChroma = _chromaFrom(mags, n);
     final c = _smoothedChroma(rawChroma);
     if (c.reduce((a, b) => a + b) < 0.5) return null; // essentially silence
@@ -213,6 +215,24 @@ class ChordDetector {
         : ChordResult(_currentChord!, _currentScore);
   }
 
+  /// Detects the chord in the buffer.
+  /// Pipeline: padded FFT (once) → interpolated + harmonic-weighted chroma →
+  /// temporal averaging → bass detection → template scoring with bass bonus →
+  /// hysteresis → result.
+  ///
+  /// Convenience wrapper that computes the FFT itself. If you already have the
+  /// spectrum, call [detectFromSpectrum] to avoid recomputing it.
+  ChordResult? detect(List<double> buffer, {double minScore = 0.20}) {
+    final mags = FFT.magnitudePadded(buffer, padFactor: 2);
+    return detectFromSpectrum(mags, mags.length * 2, minScore: minScore);
+  }
+
+  /// Builds the raw (unsmoothed) chroma from a PRECOMPUTED spectrum. Used by
+  /// the engine's note-vs-chord branch when it already has `mags`.
+  List<double> chromaFromSpectrum(List<double> mags, int n) {
+    return _chromaFrom(mags, n);
+  }
+
   /// Clears rolling state; call on silence so the next chord starts fresh.
   void reset() {
     _currentChord = null;
@@ -221,6 +241,7 @@ class ChordDetector {
   }
 
   /// Public chroma accessor for the engine's note-vs-chord branch.
+  /// Convenience wrapper that computes the FFT itself.
   List<double> chroma(List<double> buffer) {
     final mags = FFT.magnitudePadded(buffer, padFactor: 2);
     return _chromaFrom(mags, mags.length * 2);

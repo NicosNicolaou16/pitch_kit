@@ -4,6 +4,7 @@ import 'dart:math' as math;
 
 import 'audio_capture.dart';
 import 'chord_detector.dart';
+import 'fft.dart';
 import 'models/instrument_profile.dart';
 import 'note_result.dart';
 import 'yin_pitch_detector.dart';
@@ -48,11 +49,11 @@ class TunerEngine {
     this.sampleRate = 44100,
     this.frameSize = 8192,
   }) : _capture = AudioCapture(sampleRate: sampleRate, frameSize: frameSize),
-       _yin = YinPitchDetector(sampleRate),
-       // Pass the profile down so the detector uses this instrument's bounds.
-       _chordDetector = ChordDetector(sampleRate, profile),
-       // Loudness gate now comes from the profile rather than being hardcoded.
-       _rmsGate = profile.rmsGate;
+        _yin = YinPitchDetector(sampleRate),
+  // Pass the profile down so the detector uses this instrument's bounds.
+        _chordDetector = ChordDetector(sampleRate, profile),
+  // Loudness gate now comes from the profile rather than being hardcoded.
+        _rmsGate = profile.rmsGate;
 
   final AudioCapture _capture;
   final YinPitchDetector _yin;
@@ -86,22 +87,29 @@ class TunerEngine {
         return;
       }
 
+      // Compute the padded FFT ONCE for this frame and share it between the
+      // note-vs-chord decision and (if needed) chord scoring. Previously the
+      // spectrum was computed twice on chord frames.
+      final mags = FFT.magnitudePadded(buf, padFactor: 2);
+      final n = mags.length * 2;
+
       // Decide single note vs chord by counting strongly-present pitch classes.
-      final chroma = _chordDetector.chroma(buf);
+      final chroma = _chordDetector.chromaFromSpectrum(mags, n);
       final strongPitches = chroma.where((it) => it > 0.50).length;
 
       EngineResult result;
       if (strongPitches <= 1) {
-        // Monophonic → YIN for precise pitch + cents. Uses the profile's
+        // Monophonic → YIN for precise pitch + cents. Bounded by the profile's
+        // minFreq so the O(n²) search stays cheap. Uses the profile's
         // flat/sharp preference for the note name.
-        final f = _yin.detect(buf);
+        final f = _yin.detect(buf, minFreq: profile.minFreq);
         final note = NoteMapper.frequencyToNote(f, useFlats: profile.useFlats);
         result = note != null
             ? EngineNote(note.name, note.cents, note.frequency)
             : const EngineSilence();
       } else {
-        // Polyphonic → chord template matching.
-        final chord = _chordDetector.detect(buf);
+        // Polyphonic → chord template matching, reusing the same spectrum.
+        final chord = _chordDetector.detectFromSpectrum(mags, n);
         result = chord != null
             ? EngineChord(chord.name)
             : const EngineSilence();
