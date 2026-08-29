@@ -24,7 +24,7 @@ A modern and easy-to-use Flutter package for real-time guitar tuning and chord d
 | Android — target SDK | 37      |
 | iOS — min deployment | 15.0    |
 
-Tested on Flutter 3.47.1 / Dart 3.13.1.
+Tested on Flutter 3.47.2 / Dart 3.13.2.
 
 Add the package to your `pubspec.yaml`:
 
