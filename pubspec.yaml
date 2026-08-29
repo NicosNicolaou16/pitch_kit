@@ -8,6 +8,8 @@ topics:
   - frequency-analysis
   - music
 homepage: https://github.com/NicosNicolaou16/pitch_kit
+repository: https://github.com/NicosNicolaou16/pitch_kit
+issue_tracker: https://github.com/NicosNicolaou16/pitch_kit/issues
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
