@@ -77,12 +77,22 @@ class _GuitarTunerListenerState extends State<GuitarTunerListener>
     _checkAndRequest();
   }
 
-  @override
+/*  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     // Re-check on resume so returning from Settings (where the user may have
     // granted it) picks the permission up automatically.
     if (state == AppLifecycleState.resumed) {
       _refreshPermission();
+    }
+  }*/
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.paused) {
+      _stopEngine(); // release the mic in the background
+    } else if (state == AppLifecycleState.resumed) {
+      // Fresh engine on return; also picks up a permission granted in Settings.
+      _granted ? _startEngine() : _refreshPermission();
     }
   }
 
@@ -113,14 +123,8 @@ class _GuitarTunerListenerState extends State<GuitarTunerListener>
 
   /// Spins up the engine and starts streaming results once permission is held.
   void _onGranted() {
-    if (_granted) return; // already running
-    setState(() => _granted = true);
-    final engine = TunerEngine(profile: widget.profile);
-    _engine = engine;
-    _sub = engine.start().listen((result) {
-      // Convert the internal result to the public type before handing it out.
-      widget.onResult(result.toPublic());
-    });
+    if (!_granted) setState(() => _granted = true);
+    _startEngine();
   }
 
   /// Shows the rationale / permanently-denied popup.
@@ -166,9 +170,22 @@ class _GuitarTunerListenerState extends State<GuitarTunerListener>
   void dispose() {
     // Release observer, stream, and mic when the widget goes away.
     WidgetsBinding.instance.removeObserver(this);
-    _sub?.cancel();
-    _engine?.stop();
+    _stopEngine();
     super.dispose();
+  }
+
+  void _startEngine() {
+    if (_engine != null) return;
+    final engine = TunerEngine(profile: widget.profile);
+    _engine = engine;
+    _sub = engine.start().listen((r) => widget.onResult(r.toPublic()));
+  }
+
+  Future<void> _stopEngine() async {
+    final sub = _sub;
+    _engine = null;
+    _sub = null;
+    await sub?.cancel(); // onCancel → engine.stop() → recorder disposed
   }
 
   @override

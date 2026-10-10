@@ -56,6 +56,7 @@ class AudioCapture {
         autoGain: false,
         echoCancel: false,
         noiseSuppress: false,
+        audioInterruption: AudioInterruptionMode.pauseResume,
       ),
     );
 
