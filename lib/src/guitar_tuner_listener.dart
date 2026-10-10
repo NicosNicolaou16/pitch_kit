@@ -77,15 +77,6 @@ class _GuitarTunerListenerState extends State<GuitarTunerListener>
     _checkAndRequest();
   }
 
-/*  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    // Re-check on resume so returning from Settings (where the user may have
-    // granted it) picks the permission up automatically.
-    if (state == AppLifecycleState.resumed) {
-      _refreshPermission();
-    }
-  }*/
-
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.paused) {
