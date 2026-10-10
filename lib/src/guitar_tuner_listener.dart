@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:pitch_kit/src/utils/mic_permission/mic_permission.dart';
 
 import 'extensions/extensions.dart';
 import 'models/instrument_profile.dart';
@@ -54,8 +55,10 @@ class GuitarTunerListener extends StatefulWidget {
     super.key,
     this.profile = InstrumentProfile.guitar,
     this.titleText = 'Microphone needed',
-    this.permanentlyDeniedText = 'Microphone access is blocked. Please enable it in Settings to tune your guitar.',
-    this.rationaleText = 'This app needs microphone access to detect notes and chords from your guitar.',
+    this.permanentlyDeniedText =
+        'Microphone access is blocked. Please enable it in Settings to tune your guitar.',
+    this.rationaleText =
+        'This app needs microphone access to detect notes and chords from your guitar.',
     this.openSettingsText = 'Open Settings',
     this.allowText = 'Allow',
     this.dismissText = 'Not now',
@@ -95,24 +98,25 @@ class _GuitarTunerListenerState extends State<GuitarTunerListener>
 
   /// Checks current status and, if needed, fires the system permission prompt.
   Future<void> _checkAndRequest() async {
-    final status = await Permission.microphone.status;
-    if (status.isGranted) {
+    final status = await MicPermission.status();
+    if (status == MicStatus.granted) {
       _onGranted();
     } else {
-      final result = await Permission.microphone.request();
-      if (result.isGranted) {
+      final result = await MicPermission.request();
+      if (result == MicStatus.granted) {
         _onGranted();
       } else if (mounted) {
         // Denied → explain why, and route to Settings if it's permanent.
-        _showPermissionDialog(permanentlyDenied: result.isPermanentlyDenied);
+        _showPermissionDialog(
+            permanentlyDenied: result == MicStatus.permanentlyDenied);
       }
     }
   }
 
   /// Called on resume; picks up a permission granted from the Settings screen.
   Future<void> _refreshPermission() async {
-    final status = await Permission.microphone.status;
-    if (status.isGranted && !_granted) {
+    final status = await MicPermission.status();
+    if (status == MicStatus.granted && !_granted) {
       if (_dialogShowing && mounted) Navigator.of(context).pop();
       _onGranted();
     }
@@ -147,7 +151,7 @@ class _GuitarTunerListenerState extends State<GuitarTunerListener>
               Navigator.of(ctx).pop();
               if (permanentlyDenied) {
                 // Button opens the app's system settings page.
-                await openAppSettings();
+                await MicPermission.openSettings();
               } else {
                 // Permission can still be asked for → prompt again.
                 await _checkAndRequest();
@@ -176,7 +180,7 @@ class _GuitarTunerListenerState extends State<GuitarTunerListener>
     final engine = TunerEngine(profile: widget.profile);
     _engine = engine;
     _sub = engine.start().listen(
-          (r) => widget.onResult(r.toPublic()),
+      (r) => widget.onResult(r.toPublic()),
       onError: (Object e) {
         // Release the broken recorder; the next resume starts a fresh one.
         _stopEngine();
