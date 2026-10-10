@@ -123,7 +123,6 @@ class TunerEngine {
 
   /// Stops capture and closes the stream.
   Future<void> stop() async {
-    //await _capture.stop();
     await _capture.dispose();
     await _controller?.close();
     _controller = null;
