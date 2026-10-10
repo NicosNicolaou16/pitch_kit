@@ -117,17 +117,18 @@ Wrap any widget with `GuitarTunerListener`. It requests the microphone permissio
 and streams a typed `TuningResult` back through the `onResult` callback. Detection stops
 automatically when the widget is disposed.
 
-| Parameters              | Description                                                                                                                                             |
-|-------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `onResult`              | This parameter is required and it's the callback invoked with each detection result (`NoteTuningResult`, `ChordTuningResult`, or `SilenceTuningResult`) |
-| `child`                 | This parameter is required and it's the widget rendered while the tuner runs in the background                                                          |
-| `profile`               | This parameter is the `InstrumentProfile` to tune for, with default value `InstrumentProfile.guitar` (built-in: `.guitar`, `.ukulele`, `.bass`)         |
-| `titleText`             | This parameter is the title text of the permission popup with default value `"Microphone needed"`                                                       |
-| `rationaleText`         | This parameter is the text shown when the permission can still be requested                                                                             |
-| `permanentlyDeniedText` | This parameter is the text shown when the permission is permanently denied (the button then opens Settings)                                             |
-| `allowText`             | This parameter is the confirm button label when the permission can still be requested with default value `"Allow"`                                      |
-| `openSettingsText`      | This parameter is the confirm button label when the permission is permanently denied with default value `"Open Settings"`                               |
-| `dismissText`           | This parameter is the dismiss button label with default value `"Not now"`                                                                               |
+| Parameters              | Description                                                                                                                                                                   |
+|-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `onResult`              | This parameter is required and it's the callback invoked with each detection result (`NoteTuningResult`, `ChordTuningResult`, or `SilenceTuningResult`)                       |
+| `onError`               | This parameter is the optional callback invoked when the microphone can't be captured (e.g. in use by another app); detection restarts when the app returns to the foreground |
+| `child`                 | This parameter is required and it's the widget rendered while the tuner runs in the background                                                                                |
+| `profile`               | This parameter is the `InstrumentProfile` to tune for, with default value `InstrumentProfile.guitar` (built-in: `.guitar`, `.ukulele`, `.bass`)                               |
+| `titleText`             | This parameter is the title text of the permission popup with default value `"Microphone needed"`                                                                             |
+| `rationaleText`         | This parameter is the text shown when the permission can still be requested                                                                                                   |
+| `permanentlyDeniedText` | This parameter is the text shown when the permission is permanently denied (the button then opens Settings)                                                                   |
+| `allowText`             | This parameter is the confirm button label when the permission can still be requested with default value `"Allow"`                                                            |
+| `openSettingsText`      | This parameter is the confirm button label when the permission is permanently denied with default value `"Open Settings"`                                                     |
+| `dismissText`           | This parameter is the dismiss button label with default value `"Not now"`                                                                                                     |
 
 ### 🎶 TuningResult
 
