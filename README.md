@@ -58,20 +58,6 @@ No action needed. pitch_kit already declares `android.permission.RECORD_AUDIO` i
 <string>This app needs microphone access to detect notes and chords from your instrument.</string>
 ```
 
-**2.** Make sure `permission_handler`'s microphone handler is compiled in.
-
-How this works depends on how `permission_handler_apple` is activated in your build (the example resolves `permission_handler` 13.x → `permission_handler_apple` 9.6.x, which decides at **Swift Package manifest evaluation time** whether each permission's native code is compiled in — disabled permissions compile to a stub that reports *denied/permanently denied* without ever consulting the system permission):
-
-- **SPM-based apps (the Flutter default, and what the bundled example uses):** add the plist key from step 1, then set `PERMISSION_MICROPHONE=1` in the build environment (or point `PERMISSION_HANDLER_INFO_PLIST` at your app's `Info.plist`). After changing the key or the environment variables, clear DerivedData once so the package manifest is re-evaluated:
-
-  ```console
-  export PERMISSION_MICROPHONE=1
-  rm -rf ~/Library/Developer/Xcode/DerivedData/<YourApp-...>
-  flutter build ios
-  ```
-
-- **CocoaPods-based apps:** the `post_install` macro block below still applies.
-
 ```ruby
 post_install do |installer|
   installer.pods_project.targets.each do |target|
