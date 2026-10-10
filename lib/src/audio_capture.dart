@@ -36,11 +36,20 @@ class AudioCapture {
   /// if you prefer.
   Future<bool> hasPermission() => _recorder.hasPermission();
 
+  /// Completes when the last recorder has released the mic. Shared by all
+  /// instances because there is only one microphone / audio session.
+  static Future<void> _micReleased = Future.value();
+
   /// Starts capture. [onFrame] fires once per full [frameSize] frame of
   /// normalized floats. The caller must already hold microphone permission.
   Future<void> start(void Function(List<double>) onFrame) async {
     if (_running) return;
     _running = true;
+
+    // A quick background → foreground can start us while the previous
+    // recorder is still shutting down; let it finish first.
+    await _micReleased;
+    if (!_running) return; // stopped while we were waiting
 
     // Ask for a raw PCM 16-bit stream at our sample rate, single channel.
     // pcm16bits is the only encoder that gives us the untouched waveform the
@@ -92,7 +101,11 @@ class AudioCapture {
 
   /// Release native resources. Call when you're done with the recorder for good.
   Future<void> dispose() async {
-    await stop();
-    await _recorder.dispose();
+    final released = () async {
+      await stop();
+      await _recorder.dispose();
+    }();
+    _micReleased = released.catchError((Object _) {});
+    return released;
   }
 }
