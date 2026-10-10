@@ -42,6 +42,11 @@ class GuitarTunerListener extends StatefulWidget {
   /// Called with each detection result.
   final void Function(TuningResult) onResult;
 
+  /// Called when the microphone can't be captured (e.g. in use by another
+  /// app, audio session failure). Detection stops and restarts the next time
+  /// the app returns to the foreground. If null, the error is only logged.
+  final void Function(Object error)? onError;
+
   /// The subtree rendered underneath the listener.
   final Widget child;
 
@@ -55,6 +60,7 @@ class GuitarTunerListener extends StatefulWidget {
     this.allowText = 'Allow',
     this.dismissText = 'Not now',
     required this.onResult,
+    this.onError,
     required this.child,
   });
 
@@ -169,7 +175,19 @@ class _GuitarTunerListenerState extends State<GuitarTunerListener>
     if (_engine != null) return;
     final engine = TunerEngine(profile: widget.profile);
     _engine = engine;
-    _sub = engine.start().listen((r) => widget.onResult(r.toPublic()));
+    _sub = engine.start().listen(
+          (r) => widget.onResult(r.toPublic()),
+      onError: (Object e) {
+        // Release the broken recorder; the next resume starts a fresh one.
+        _stopEngine();
+        final onError = widget.onError;
+        if (onError != null) {
+          onError(e);
+        } else {
+          debugPrint('pitch_kit: microphone capture failed: $e');
+        }
+      },
+    );
   }
 
   Future<void> _stopEngine() async {

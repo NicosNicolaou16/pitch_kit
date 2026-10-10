@@ -42,7 +42,10 @@ class AudioCapture {
 
   /// Starts capture. [onFrame] fires once per full [frameSize] frame of
   /// normalized floats. The caller must already hold microphone permission.
-  Future<void> start(void Function(List<double>) onFrame) async {
+  Future<void> start(
+    void Function(List<double>) onFrame, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  }) async {
     if (_running) return;
     _running = true;
 
@@ -54,20 +57,26 @@ class AudioCapture {
     // Ask for a raw PCM 16-bit stream at our sample rate, single channel.
     // pcm16bits is the only encoder that gives us the untouched waveform the
     // DSP needs (no AAC/opus compression in the path).
-    final stream = await _recorder.startStream(
-      RecordConfig(
-        encoder: AudioEncoder.pcm16bits,
-        sampleRate: sampleRate,
-        numChannels: 1,
-        // Disable OS-level processing so we get the raw signal, mirroring the
-        // Android choice of VOICE_RECOGNITION-style untouched audio. These are
-        // best-effort per platform.
-        autoGain: false,
-        echoCancel: false,
-        noiseSuppress: false,
-        audioInterruption: AudioInterruptionMode.pauseResume,
-      ),
-    );
+    final Stream<Uint8List> stream;
+    try {
+      stream = await _recorder.startStream(
+        RecordConfig(
+          encoder: AudioEncoder.pcm16bits,
+          sampleRate: sampleRate,
+          numChannels: 1,
+          // Disable OS-level processing so we get the raw signal, mirroring the
+          // Android choice of VOICE_RECOGNITION-style untouched audio. These are
+          // best-effort per platform.
+          autoGain: false,
+          echoCancel: false,
+          noiseSuppress: false,
+          audioInterruption: AudioInterruptionMode.pauseResume,
+        ),
+      );
+    } catch (e) {
+      _running = false; // so a later start() isn't ignored
+      rethrow;
+    }
 
     _sub = stream.listen((Uint8List chunk) {
       // Interpret the byte buffer as little-endian 16-bit signed samples.
@@ -86,7 +95,7 @@ class AudioCapture {
         _ring.removeRange(0, frameSize);
         onFrame(frame);
       }
-    });
+    }, onError: onError);
   }
 
   /// Stops capture and releases the mic. Safe to call when already stopped.
