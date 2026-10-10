@@ -43,7 +43,9 @@
 					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
 					<key>UISceneStoryboardFile</key>
 					<string>Main</string>
-				</dict>
+					<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs microphone access to detect notes and chords from your instrument.</string>
+</dict>
 			</array>
 		</dict>
 	</dict>
