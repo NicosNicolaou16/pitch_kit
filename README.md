@@ -28,7 +28,7 @@ Add the package to your `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  pitch_kit: ^0.0.1
+  pitch_kit: ^0.0.2
 ```
 
 Or install it from the command line:
