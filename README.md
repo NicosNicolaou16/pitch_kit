@@ -39,7 +39,7 @@ Or install it from the command line:
 flutter pub add pitch_kit
 ```
 
-This package depends on [`record`](https://pub.dev/packages/record) for microphone capture and [`permission_handler`](https://pub.dev/packages/permission_handler) for the runtime permission flow. Both are pulled in automatically.
+This package depends on [`record`](https://pub.dev/packages/record) for microphone capture (and the iOS permission check) and [`permission_handler`](https://pub.dev/packages/permission_handler) for the Android permission flow and opening Settings. Both are pulled in automatically.
 
 ### 📱 Platform Setup
 
