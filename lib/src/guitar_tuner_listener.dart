@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:pitch_kit/src/utils/mic_permission/mic_permission.dart';
 
 import 'extensions/extensions.dart';
 import 'models/instrument_profile.dart';
@@ -42,6 +42,11 @@ class GuitarTunerListener extends StatefulWidget {
   /// Called with each detection result.
   final void Function(TuningResult) onResult;
 
+  /// Called when the microphone can't be captured (e.g. in use by another
+  /// app, audio session failure). Detection stops and restarts the next time
+  /// the app returns to the foreground. If null, the error is only logged.
+  final void Function(Object error)? onError;
+
   /// The subtree rendered underneath the listener.
   final Widget child;
 
@@ -49,12 +54,15 @@ class GuitarTunerListener extends StatefulWidget {
     super.key,
     this.profile = InstrumentProfile.guitar,
     this.titleText = 'Microphone needed',
-    this.permanentlyDeniedText = 'Microphone access is blocked. Please enable it in Settings to tune your guitar.',
-    this.rationaleText = 'This app needs microphone access to detect notes and chords from your guitar.',
+    this.permanentlyDeniedText =
+        'Microphone access is blocked. Please enable it in Settings to tune your guitar.',
+    this.rationaleText =
+        'This app needs microphone access to detect notes and chords from your guitar.',
     this.openSettingsText = 'Open Settings',
     this.allowText = 'Allow',
     this.dismissText = 'Not now',
     required this.onResult,
+    this.onError,
     required this.child,
   });
 
@@ -79,33 +87,35 @@ class _GuitarTunerListenerState extends State<GuitarTunerListener>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // Re-check on resume so returning from Settings (where the user may have
-    // granted it) picks the permission up automatically.
-    if (state == AppLifecycleState.resumed) {
-      _refreshPermission();
+    if (state == AppLifecycleState.paused) {
+      _stopEngine(); // release the mic in the background
+    } else if (state == AppLifecycleState.resumed) {
+      // Fresh engine on return; also picks up a permission granted in Settings.
+      _granted ? _startEngine() : _refreshPermission();
     }
   }
 
   /// Checks current status and, if needed, fires the system permission prompt.
   Future<void> _checkAndRequest() async {
-    final status = await Permission.microphone.status;
-    if (status.isGranted) {
+    final status = await MicPermission.status();
+    if (status == MicStatus.granted) {
       _onGranted();
     } else {
-      final result = await Permission.microphone.request();
-      if (result.isGranted) {
+      final result = await MicPermission.request();
+      if (result == MicStatus.granted) {
         _onGranted();
       } else if (mounted) {
         // Denied → explain why, and route to Settings if it's permanent.
-        _showPermissionDialog(permanentlyDenied: result.isPermanentlyDenied);
+        _showPermissionDialog(
+            permanentlyDenied: result == MicStatus.permanentlyDenied);
       }
     }
   }
 
   /// Called on resume; picks up a permission granted from the Settings screen.
   Future<void> _refreshPermission() async {
-    final status = await Permission.microphone.status;
-    if (status.isGranted && !_granted) {
+    final status = await MicPermission.status();
+    if (status == MicStatus.granted && !_granted) {
       if (_dialogShowing && mounted) Navigator.of(context).pop();
       _onGranted();
     }
@@ -113,14 +123,8 @@ class _GuitarTunerListenerState extends State<GuitarTunerListener>
 
   /// Spins up the engine and starts streaming results once permission is held.
   void _onGranted() {
-    if (_granted) return; // already running
-    setState(() => _granted = true);
-    final engine = TunerEngine(profile: widget.profile);
-    _engine = engine;
-    _sub = engine.start().listen((result) {
-      // Convert the internal result to the public type before handing it out.
-      widget.onResult(result.toPublic());
-    });
+    if (!_granted) setState(() => _granted = true);
+    _startEngine();
   }
 
   /// Shows the rationale / permanently-denied popup.
@@ -146,7 +150,7 @@ class _GuitarTunerListenerState extends State<GuitarTunerListener>
               Navigator.of(ctx).pop();
               if (permanentlyDenied) {
                 // Button opens the app's system settings page.
-                await openAppSettings();
+                await MicPermission.openSettings();
               } else {
                 // Permission can still be asked for → prompt again.
                 await _checkAndRequest();
@@ -166,9 +170,34 @@ class _GuitarTunerListenerState extends State<GuitarTunerListener>
   void dispose() {
     // Release observer, stream, and mic when the widget goes away.
     WidgetsBinding.instance.removeObserver(this);
-    _sub?.cancel();
-    _engine?.stop();
+    _stopEngine();
     super.dispose();
+  }
+
+  void _startEngine() {
+    if (_engine != null) return;
+    final engine = TunerEngine(profile: widget.profile);
+    _engine = engine;
+    _sub = engine.start().listen(
+      (r) => widget.onResult(r.toPublic()),
+      onError: (Object e) {
+        // Release the broken recorder; the next resume starts a fresh one.
+        _stopEngine();
+        final onError = widget.onError;
+        if (onError != null) {
+          onError(e);
+        } else {
+          debugPrint('pitch_kit: microphone capture failed: $e');
+        }
+      },
+    );
+  }
+
+  Future<void> _stopEngine() async {
+    final sub = _sub;
+    _engine = null;
+    _sub = null;
+    await sub?.cancel(); // onCancel → engine.stop() → recorder disposed
   }
 
   @override

@@ -1,6 +1,6 @@
 name: pitch_kit
 description: "Real-time chord and note detection from the device microphone, built on a pure Dart DSP core."
-version: 0.0.1
+version: 0.0.2
 topics:
   - chord-detector
   - tuner
@@ -19,8 +19,8 @@ dependencies:
   flutter:
     sdk: flutter
   plugin_platform_interface: ^2.1.8
-  record: ^7.1.1
-  permission_handler: ^13.0.1
+  record: ^7.1.2
+  permission_handler: ^13.0.2
 
 dev_dependencies:
   flutter_test:

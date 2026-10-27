@@ -99,6 +99,7 @@ class _TunerScreenState extends State<TunerScreen> {
       body: SafeArea(
         child: GuitarTunerListener(
           onResult: _onResult,
+          onError: (_) => setState(() => _resultNote = 'Mic unavailable'),
           child: ExpressiveTunerUI(
             resultNote: _resultNote,
             resultFreq: _resultFreq,

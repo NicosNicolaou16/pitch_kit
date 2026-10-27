@@ -1,5 +1,3 @@
-# pitch_kit
-
 ## ✨ Features
 
 A modern and easy-to-use Flutter package for real-time chord and note detection straight from the device microphone, with a pure Dart DSP core:
@@ -24,7 +22,7 @@ A modern and easy-to-use Flutter package for real-time chord and note detection 
 | Android — target SDK | 37       |
 | iOS — min deployment | 15.0     |
 
-Tested on Flutter 3.47.2 / Dart 3.13.2.
+Tested on Flutter 3.47.8 / Dart 3.13.7.
 
 Add the package to your `pubspec.yaml`:
 
@@ -39,7 +37,7 @@ Or install it from the command line:
 flutter pub add pitch_kit
 ```
 
-This package depends on [`record`](https://pub.dev/packages/record) for microphone capture and [`permission_handler`](https://pub.dev/packages/permission_handler) for the runtime permission flow. Both are pulled in automatically.
+This package depends on [`record`](https://pub.dev/packages/record) for microphone capture (and the iOS permission check) and [`permission_handler`](https://pub.dev/packages/permission_handler) for the Android permission flow and opening Settings. Both are pulled in automatically.
 
 ### 📱 Platform Setup
 
@@ -51,55 +49,14 @@ No action needed. pitch_kit already declares `android.permission.RECORD_AUDIO` i
 
 #### iOS
 
-**1.** Add the usage description to `ios/Runner/Info.plist`. Without it, iOS terminates the app the instant it accesses the microphone:
+Add the usage description to `ios/Runner/Info.plist`, at the top level of the `<dict>`. Without it, iOS terminates the app the instant it accesses the microphone:
 
 ```xml
 <key>NSMicrophoneUsageDescription</key>
 <string>This app needs microphone access to detect notes and chords from your instrument.</string>
 ```
 
-**2.** Make sure `permission_handler`'s microphone handler is compiled in.
-
-How this works depends on how `permission_handler_apple` is activated in your build (the example resolves `permission_handler` 13.x → `permission_handler_apple` 9.6.x, which decides at **Swift Package manifest evaluation time** whether each permission's native code is compiled in — disabled permissions compile to a stub that reports *denied/permanently denied* without ever consulting the system permission):
-
-- **SPM-based apps (the Flutter default, and what the bundled example uses):** add the plist key from step 1, then set `PERMISSION_MICROPHONE=1` in the build environment (or point `PERMISSION_HANDLER_INFO_PLIST` at your app's `Info.plist`). After changing the key or the environment variables, clear DerivedData once so the package manifest is re-evaluated:
-
-  ```console
-  export PERMISSION_MICROPHONE=1
-  rm -rf ~/Library/Developer/Xcode/DerivedData/<YourApp-...>
-  flutter build ios
-  ```
-
-- **CocoaPods-based apps:** the `post_install` macro block below still applies.
-
-```ruby
-post_install do |installer|
-  installer.pods_project.targets.each do |target|
-    flutter_additional_ios_build_settings(target)
-    target.build_configurations.each do |config|
-      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
-        '$(inherited)',
-        'PERMISSION_MICROPHONE=1',
-        'PERMISSION_EVENTS=0',
-        'PERMISSION_EVENTS_FULL_ACCESS=0',
-        'PERMISSION_REMINDERS=0',
-        'PERMISSION_CONTACTS=0',
-        'PERMISSION_CAMERA=0',
-        'PERMISSION_PHOTOS=0',
-        'PERMISSION_NOTIFICATIONS=0',
-        'PERMISSION_MEDIA_LIBRARY=0',
-        'PERMISSION_SENSORS=0',
-        'PERMISSION_BLUETOOTH=0',
-        'PERMISSION_APP_TRACKING_TRANSPARENCY=0',
-        'PERMISSION_CRITICAL_ALERTS=0',
-        'PERMISSION_ASSISTANT=0',
-        'PERMISSION_LOCATION=0',
-        'PERMISSION_SPEECH_RECOGNIZER=0',
-      ]
-    end
-  end
-end
-```
+No Podfile changes, build flags or environment variables are needed. It works the same with Swift Package Manager and CocoaPods.
 
 ## 💡 Usage
 
@@ -117,17 +74,18 @@ Wrap any widget with `GuitarTunerListener`. It requests the microphone permissio
 and streams a typed `TuningResult` back through the `onResult` callback. Detection stops
 automatically when the widget is disposed.
 
-| Parameters              | Description                                                                                                                                             |
-|-------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `onResult`              | This parameter is required and it's the callback invoked with each detection result (`NoteTuningResult`, `ChordTuningResult`, or `SilenceTuningResult`) |
-| `child`                 | This parameter is required and it's the widget rendered while the tuner runs in the background                                                          |
-| `profile`               | This parameter is the `InstrumentProfile` to tune for, with default value `InstrumentProfile.guitar` (built-in: `.guitar`, `.ukulele`, `.bass`)         |
-| `titleText`             | This parameter is the title text of the permission popup with default value `"Microphone needed"`                                                       |
-| `rationaleText`         | This parameter is the text shown when the permission can still be requested                                                                             |
-| `permanentlyDeniedText` | This parameter is the text shown when the permission is permanently denied (the button then opens Settings)                                             |
-| `allowText`             | This parameter is the confirm button label when the permission can still be requested with default value `"Allow"`                                      |
-| `openSettingsText`      | This parameter is the confirm button label when the permission is permanently denied with default value `"Open Settings"`                               |
-| `dismissText`           | This parameter is the dismiss button label with default value `"Not now"`                                                                               |
+| Parameters              | Description                                                                                                                                                                   |
+|-------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `profile`               | This parameter is the `InstrumentProfile` to tune for, with default value `InstrumentProfile.guitar` (built-in: `.guitar`, `.ukulele`, `.bass`)                               |
+| `titleText`             | This parameter is the title text of the permission popup with default value `"Microphone needed"`                                                                             |
+| `rationaleText`         | This parameter is the text shown when the permission can still be requested                                                                                                   |
+| `permanentlyDeniedText` | This parameter is the text shown when the permission is permanently denied (the button then opens Settings)                                                                   |
+| `allowText`             | This parameter is the confirm button label when the permission can still be requested with default value `"Allow"`                                                            |
+| `openSettingsText`      | This parameter is the confirm button label when the permission is permanently denied with default value `"Open Settings"`                                                     |
+| `dismissText`           | This parameter is the dismiss button label with default value `"Not now"`                                                                                                     |
+| `onResult`              | This parameter is required and it's the callback invoked with each detection result (`NoteTuningResult`, `ChordTuningResult`, or `SilenceTuningResult`)                       |
+| `onError`               | This parameter is the optional callback invoked when the microphone can't be captured (e.g. in use by another app); detection restarts when the app returns to the foreground |
+| `child`                 | This parameter is required and it's the widget rendered while the tuner runs in the background                                                                                |
 
 ### 🎶 TuningResult
 
