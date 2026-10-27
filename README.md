@@ -51,41 +51,14 @@ No action needed. pitch_kit already declares `android.permission.RECORD_AUDIO` i
 
 #### iOS
 
-**1.** Add the usage description to `ios/Runner/Info.plist`. Without it, iOS terminates the app the instant it accesses the microphone:
+Add the usage description to `ios/Runner/Info.plist`, at the top level of the `<dict>`. Without it, iOS terminates the app the instant it accesses the microphone:
 
 ```xml
 <key>NSMicrophoneUsageDescription</key>
 <string>This app needs microphone access to detect notes and chords from your instrument.</string>
 ```
 
-```ruby
-post_install do |installer|
-  installer.pods_project.targets.each do |target|
-    flutter_additional_ios_build_settings(target)
-    target.build_configurations.each do |config|
-      config.build_settings['GCC_PREPROCESSOR_DEFINITIONS'] ||= [
-        '$(inherited)',
-        'PERMISSION_MICROPHONE=1',
-        'PERMISSION_EVENTS=0',
-        'PERMISSION_EVENTS_FULL_ACCESS=0',
-        'PERMISSION_REMINDERS=0',
-        'PERMISSION_CONTACTS=0',
-        'PERMISSION_CAMERA=0',
-        'PERMISSION_PHOTOS=0',
-        'PERMISSION_NOTIFICATIONS=0',
-        'PERMISSION_MEDIA_LIBRARY=0',
-        'PERMISSION_SENSORS=0',
-        'PERMISSION_BLUETOOTH=0',
-        'PERMISSION_APP_TRACKING_TRANSPARENCY=0',
-        'PERMISSION_CRITICAL_ALERTS=0',
-        'PERMISSION_ASSISTANT=0',
-        'PERMISSION_LOCATION=0',
-        'PERMISSION_SPEECH_RECOGNIZER=0',
-      ]
-    end
-  end
-end
-```
+No Podfile changes, build flags or environment variables are needed. It works the same with Swift Package Manager and CocoaPods.
 
 ## 💡 Usage
 
