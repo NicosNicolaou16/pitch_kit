@@ -1,5 +1,3 @@
-# pitch_kit
-
 ## ✨ Features
 
 A modern and easy-to-use Flutter package for real-time chord and note detection straight from the device microphone, with a pure Dart DSP core:
