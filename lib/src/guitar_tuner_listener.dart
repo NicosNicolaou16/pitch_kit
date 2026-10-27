@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:pitch_kit/src/utils/mic_permission/mic_permission.dart';
 
 import 'extensions/extensions.dart';
