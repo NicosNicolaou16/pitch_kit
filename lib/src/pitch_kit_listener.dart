@@ -15,7 +15,7 @@ import 'tuning_result.dart';
 ///
 /// Wrap any subtree in this widget; [child] is rendered unchanged while the
 /// tuner runs in the background.
-class GuitarTunerListener extends StatefulWidget {
+class PitchKitListener extends StatefulWidget {
   /// The instrument to tune/detect for. Defaults to [InstrumentProfile.guitar].
   final InstrumentProfile profile;
 
@@ -50,7 +50,7 @@ class GuitarTunerListener extends StatefulWidget {
   /// The subtree rendered underneath the listener.
   final Widget child;
 
-  const GuitarTunerListener({
+  const PitchKitListener({
     super.key,
     this.profile = InstrumentProfile.guitar,
     this.titleText = 'Microphone needed',
@@ -67,10 +67,10 @@ class GuitarTunerListener extends StatefulWidget {
   });
 
   @override
-  State<GuitarTunerListener> createState() => _GuitarTunerListenerState();
+  State<PitchKitListener> createState() => _PitchKitListenerState();
 }
 
-class _GuitarTunerListenerState extends State<GuitarTunerListener>
+class _PitchKitListenerState extends State<PitchKitListener>
     with WidgetsBindingObserver {
   TunerEngine? _engine;
   StreamSubscription<EngineResult>? _sub;
