@@ -1,3 +1,7 @@
+## 0.0.3
+
+* ✏️ Renamed `GuitarTunerListener` to `PitchKitListener`, since it works for any instrument profile. The old name still works but is deprecated and will be removed in a future version.
+
 ## 0.0.2
 
 * 🐛 Tuner recovers after audio interruptions (calls, Siri, alarms) and when returning from the background ([#10](https://github.com/NicosNicolaou16/pitch_kit/issues/10)).

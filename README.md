@@ -22,7 +22,7 @@ A modern and easy-to-use Flutter package for real-time chord and note detection 
 | Android — target SDK | 37       |
 | iOS — min deployment | 15.0     |
 
-Tested on Flutter 3.47.8 / Dart 3.13.7.
+Tested on Flutter 3.47.9 / Dart 3.13.7.
 
 Add the package to your `pubspec.yaml`:
 
@@ -68,9 +68,9 @@ The example below shows a minimal integration. See the [example project](https:/
   <a title="simulator_image"><img src="https://github.com/NicosNicolaou16/pitch_kit/raw/main/screenshots/example1_gif.gif" height="530" width="250"></a>
 </p>
 
-### 🎸 GuitarTunerListener
+### 🎸 PitchKitListener
 
-Wrap any widget with `GuitarTunerListener`. It requests the microphone permission, starts detection,
+Wrap any widget with `PitchKitListener`. It requests the microphone permission, starts detection,
 and streams a typed `TuningResult` back through the `onResult` callback. Detection stops
 automatically when the widget is disposed.
 
@@ -159,7 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // ==========================================
       // 1. Start the tuner
       // ==========================================
-      body: GuitarTunerListener(
+      body: PitchKitListener(
         profile: InstrumentProfile.guitar,
         onResult: (result) {
           setState(() {
@@ -220,7 +220,7 @@ const dropD = InstrumentProfile(
   ],
 );
 
-GuitarTunerListener(
+PitchKitListener(
   profile: dropD,
   onResult: (result) {
     //...your code here
