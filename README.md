@@ -22,7 +22,7 @@ A modern and easy-to-use Flutter package for real-time chord and note detection 
 | Android — target SDK | 37       |
 | iOS — min deployment | 15.0     |
 
-Tested on Flutter 3.47.8 / Dart 3.13.7.
+Tested on Flutter 3.47.9 / Dart 3.13.7.
 
 Add the package to your `pubspec.yaml`:
 
