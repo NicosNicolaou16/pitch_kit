@@ -159,7 +159,7 @@ class _MyHomePageState extends State<MyHomePage> {
       // ==========================================
       // 1. Start the tuner
       // ==========================================
-      body: GuitarTunerListener(
+      body: PitchKitListener(
         profile: InstrumentProfile.guitar,
         onResult: (result) {
           setState(() {
