@@ -220,7 +220,7 @@ const dropD = InstrumentProfile(
   ],
 );
 
-GuitarTunerListener(
+PitchKitListener(
   profile: dropD,
   onResult: (result) {
     //...your code here
