@@ -1,4 +1,5 @@
 ### 0.0.3
+
 * ✏️ Renamed `GuitarTunerListener` to `PitchKitListener`, since it works for any instrument profile. The old name still works but is deprecated and will be removed in a future version.
 
 ## 0.0.2
