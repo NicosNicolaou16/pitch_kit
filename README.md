@@ -68,7 +68,7 @@ The example below shows a minimal integration. See the [example project](https:/
   <a title="simulator_image"><img src="https://github.com/NicosNicolaou16/pitch_kit/raw/main/screenshots/example1_gif.gif" height="530" width="250"></a>
 </p>
 
-### 🎸 GuitarTunerListener
+### 🎸 PitchKitListener
 
 Wrap any widget with `GuitarTunerListener`. It requests the microphone permission, starts detection,
 and streams a typed `TuningResult` back through the `onResult` callback. Detection stops
