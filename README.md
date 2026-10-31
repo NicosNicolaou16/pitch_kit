@@ -70,7 +70,7 @@ The example below shows a minimal integration. See the [example project](https:/
 
 ### 🎸 PitchKitListener
 
-Wrap any widget with `GuitarTunerListener`. It requests the microphone permission, starts detection,
+Wrap any widget with `PitchKitListener`. It requests the microphone permission, starts detection,
 and streams a typed `TuningResult` back through the `onResult` callback. Detection stops
 automatically when the widget is disposed.
 
