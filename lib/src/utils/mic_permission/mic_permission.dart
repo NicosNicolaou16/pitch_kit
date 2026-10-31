@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart' as ph;
 import 'package:record/record.dart';
 
-/// Microphone permission state used by [GuitarTunerListener].
+/// Microphone permission state used by [PitchKitListener].
 enum MicStatus { granted, denied, permanentlyDenied }
 
 /// Microphone permission without permission_handler's iOS build-time setup
