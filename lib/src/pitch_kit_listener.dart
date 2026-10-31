@@ -203,3 +203,9 @@ class _PitchKitListenerState extends State<PitchKitListener>
   @override
   Widget build(BuildContext context) => widget.child;
 }
+
+/// Old name of [PitchKitListener], kept so existing code still compiles.
+@Deprecated(
+  'Use PitchKitListener instead. GuitarTunerListener will be removed in a future version.',
+)
+typedef GuitarTunerListener = PitchKitListener;
