@@ -93,7 +93,7 @@ class _TunerScreenState extends State<TunerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // GuitarTunerListener handles mic permission and streams results; it
+    // PitchKitListener handles mic permission and streams results; it
     // renders [child] underneath while running in the background.
     return Scaffold(
       body: SafeArea(
